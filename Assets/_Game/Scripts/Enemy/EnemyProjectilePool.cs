@@ -1,0 +1,1 @@
+public class EnemyProjectilePool : ObjectPool<Projectile<Player>> { }
