@@ -46,14 +46,14 @@ public abstract class Shooter<EnemyType> : MonoBehaviour
 
     private void AddListeners(Projectile<EnemyType> projectile)
     {
-        projectile.Destroing += _pool.Put;
+        projectile.Desactivating += _pool.Put;
         projectile.Collide += OnProjectileHit;
-        //projectile.Destroyed += RemoveListeners;
+        projectile.Destroyed += RemoveListeners;
     }
 
     private void RemoveListeners(Projectile<EnemyType> projectile)
     {
-        projectile.Destroing -= _pool.Put;
+        projectile.Desactivating -= _pool.Put;
         projectile.Collide -= OnProjectileHit;
         projectile.Destroyed -= RemoveListeners;
     }

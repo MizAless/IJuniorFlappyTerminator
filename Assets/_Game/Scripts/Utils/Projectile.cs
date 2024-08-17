@@ -15,12 +15,26 @@ public abstract class Projectile<EnemyType> : MonoBehaviour
     public int Damage => _damage;
 
     public event Action<Projectile<EnemyType>, EnemyType> Collide;
-    public event Action<Projectile<EnemyType>> Destroing;
+    public event Action<Projectile<EnemyType>> Desactivating;
+    public event Action<Projectile<EnemyType>> Desactivated;
     public event Action<Projectile<EnemyType>> Destroyed;
 
     private void Awake()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.TryGetComponent(out EnemyType enemy))
+        {
+            Collide?.Invoke(this, enemy);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        Destroyed?.Invoke(this);
     }
 
     public void Init(Vector3 position, Quaternion quaternion)
@@ -34,16 +48,8 @@ public abstract class Projectile<EnemyType> : MonoBehaviour
 
     public void Destroy()
     {
-        Destroing?.Invoke(this);
-        Destroyed?.Invoke(this);
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.TryGetComponent(out EnemyType enemy))
-        {
-            Collide?.Invoke(this, enemy);
-        }
+        Desactivating?.Invoke(this);
+        Desactivated?.Invoke(this);
     }
 
     private IEnumerator DestroyWithDelay()

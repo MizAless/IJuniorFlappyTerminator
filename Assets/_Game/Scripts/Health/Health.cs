@@ -7,6 +7,7 @@ public class Health : MonoBehaviour
 
     private int _health;
 
+    public event Action<int> Changed;
     public event Action Dying;
     public event Action Died;
 
@@ -18,12 +19,11 @@ public class Health : MonoBehaviour
     public void Init()
     {
         _health = _maxHealth;
+        Changed?.Invoke(_health);
     }
 
     public void TakeDamage(int damage)
     {
-        //print(_health);
-
         if (damage < 0)
             return;
 
@@ -31,11 +31,13 @@ public class Health : MonoBehaviour
 
         _health = Mathf.Clamp(_health, 0, _maxHealth);
 
+        Changed?.Invoke(_health);
+
         if (_health == 0)
             Die();
     }
 
-    private void Die()
+    public void Die()
     {
         Dying?.Invoke();
         Died?.Invoke();

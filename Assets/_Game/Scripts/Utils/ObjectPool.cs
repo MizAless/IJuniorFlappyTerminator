@@ -28,9 +28,6 @@ public class ObjectPool<T> : MonoBehaviour
         newObject = _pool.Dequeue();
         newObject.gameObject.SetActive(true);
 
-        if (newObject is Enemy)
-            print("Pool count = " + _pool.Count);
-
         isInstantiated = false;
         return newObject;
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,8 @@ public class EnemySpawner : MonoBehaviour
 
     private List<SpawnPoint> _unarySpawnPoints;
 
+    public event Action<Enemy> InstatiatedEnemy;
+
     private void Awake()
     {
         _unarySpawnPoints = new();
@@ -21,7 +24,7 @@ public class EnemySpawner : MonoBehaviour
             _unarySpawnPoints.Add(new SpawnPoint(spawnPoint.position));
     }
 
-    private void Start()
+    public void StartSpawning()
     {
         StartCoroutine(Spawning());
     }
@@ -47,21 +50,24 @@ public class EnemySpawner : MonoBehaviour
         spawnPoint.SetEnemy(enemy);
 
         if (isInstantiated)
+        {
+            InstatiatedEnemy?.Invoke(enemy);
             AddListeners(enemy);
+        }
 
         Vector3 movePosition = spawnPoint.Position;
-        float randomSpawnYPoint = Random.Range(-_spawnOffest.y, _spawnOffest.y);
+        float randomSpawnYPoint = UnityEngine.Random.Range(-_spawnOffest.y, _spawnOffest.y);
         Vector3 spawnPosition = movePosition + Vector3.right * _spawnOffest.x + Vector3.up * randomSpawnYPoint;
         Quaternion spawnRotation = Quaternion.Euler(0, 180, 0);
 
         enemy.Init(spawnPosition, movePosition, spawnRotation, _enemyProjectilePool);
+
+        
     }
 
     private bool TryGetRandomSpawnPoint(out SpawnPoint spawnPoint)
     {
         var freeSpawnPoints = _unarySpawnPoints.Where(spawnPoint => spawnPoint.IsFree).ToList();
-
-        print("Free spawn points coint = " + freeSpawnPoints.Count);
 
         if (freeSpawnPoints.Count == 0)
         {
@@ -69,33 +75,19 @@ public class EnemySpawner : MonoBehaviour
             return false;
         }
 
-        spawnPoint = freeSpawnPoints[Random.Range(0, freeSpawnPoints.Count)];
+        spawnPoint = freeSpawnPoints[UnityEngine.Random.Range(0, freeSpawnPoints.Count)];
         return true;
     }
 
     private void AddListeners(Enemy enemy)
     {
-        //enemy.Dying += ClearSpawnPoint;
         enemy.Dying += _pool.Put;
-        //enemy.Dying += PrintSpawnPointCount;
-        //enemy.Died += RemoveListeners;
+        enemy.Destroyed += RemoveListeners;
     }
 
     private void RemoveListeners(Enemy enemy)
     {
-        //enemy.Dying -= ClearSpawnPoint;
         enemy.Dying -= _pool.Put;
-        //enemy.Dying -= PrintSpawnPointCount;
-        enemy.Died -= RemoveListeners;
+        enemy.Destroyed -= RemoveListeners;
     }
-
-    //private void PrintSpawnPointCount(Enemy _)
-    //{
-    //    print(_unarySpawnPoints.Where(spawnPoint => spawnPoint.IsFree).ToList().Count);
-    //}
-
-    //private void ClearSpawnPoint(Enemy enemy)
-    //{
-    //    _unarySpawnPoints.FirstOrDefault(spawnPoint => spawnPoint.Enemy == enemy).Clear();
-    //}
 }

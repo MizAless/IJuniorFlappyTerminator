@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Mover))]
@@ -11,6 +12,8 @@ public class Player : MonoBehaviour, IDamagable
     private PlayerShooter _shooter;
     private Health _health;
 
+    public event Action Died;
+
     private void Awake()
     {
         _mover = GetComponent<Mover>();
@@ -19,22 +22,50 @@ public class Player : MonoBehaviour, IDamagable
         _health = GetComponent<Health>();
     }
 
-    private void OnEnable()
+    private void Start()
     {
-        _inputReader.Jumped += _mover.Jump;
-        _inputReader.ShootFired += _shooter.Shoot;
+        StartCoroutine(_mover.AutomaticFlying());
     }
 
     private void OnDisable()
     {
-        _inputReader.Jumped -= _mover.Jump;
-        _inputReader.ShootFired -= _shooter.Shoot;
+        RemoveListeners();
     }
 
     private void FixedUpdate() => _mover.Rotate();
 
+    public void StartFlying()
+    {
+        _mover.OffAutomaticFlying();
+        AddListeners();
+    }
+
     public void TakeDamage(int damage)
     {
         _health.TakeDamage(damage);
+    }
+
+    public void Die()
+    {
+        _health.Die();
+    }
+
+    private void AddListeners()
+    {
+        _inputReader.Jumped += _mover.Jump;
+        _inputReader.ShootFired += _shooter.Shoot;
+        _health.Died += OnDied;
+    }
+
+    private void RemoveListeners()
+    {
+        _inputReader.Jumped -= _mover.Jump;
+        _inputReader.ShootFired -= _shooter.Shoot;
+        _health.Died -= OnDied;
+    }
+
+    private void OnDied()
+    {
+        Died?.Invoke();
     }
 }

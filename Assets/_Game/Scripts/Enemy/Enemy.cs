@@ -12,6 +12,7 @@ public class Enemy : MonoBehaviour, IDamagable
 
     public event Action<Enemy> Dying;
     public event Action<Enemy> Died;
+    public event Action<Enemy> Destroyed;
 
     private void Awake()
     {
@@ -29,6 +30,11 @@ public class Enemy : MonoBehaviour, IDamagable
     {
         _health.Dying += OnDying;
         _health.Died += OnDied;
+    }
+
+    private void OnDestroy()
+    {
+        Destroyed?.Invoke(this);
     }
 
     private void OnDisable()
