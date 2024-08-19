@@ -1,19 +1,21 @@
+using System.Collections;
 using UnityEngine;
 
-public abstract class Shooter<EnemyType> : MonoBehaviour
-    where EnemyType : IDamagable
+public abstract class Shooter<OwnerType> : MonoBehaviour
+    where OwnerType : MonoBehaviour, IDamagable
 {
     [SerializeField] private float _shootCooldown;
-    [SerializeField] private ObjectPool<Projectile<EnemyType>> _pool;
+    [SerializeField] private Spawner<Projectile<OwnerType>> _projectileSpawner;
     [SerializeField] private Transform _shootPoint;
 
     private bool _canShoot = true;
 
     protected float ShootCooldown => _shootCooldown;
 
-    public void Init(ObjectPool<Projectile<EnemyType>> pool)
+    public void Init(Spawner<Projectile<OwnerType>> projectileSpawner)
     {
-        _pool = pool;
+        _projectileSpawner = projectileSpawner;
+        _canShoot = true;
     }
 
     public void Shoot()
@@ -23,40 +25,16 @@ public abstract class Shooter<EnemyType> : MonoBehaviour
 
         _canShoot = false;
 
-        var projectile = _pool.Get(out bool isInstantiated);
-
-        if (isInstantiated)
-            AddListeners(projectile);
+        var projectile = _projectileSpawner.Spawn();
 
         projectile.Init(_shootPoint.position, _shootPoint.rotation);
 
-        Reload();
+        StartCoroutine(Reload());
     }
 
-    private void OnProjectileHit(Projectile<EnemyType> projectile, EnemyType enemy)
+    private IEnumerator Reload()
     {
-        enemy.TakeDamage(projectile.Damage);
-        projectile.Destroy();
+        yield return new WaitForSeconds(_shootCooldown);
+        _canShoot = true;
     }
-
-    private void Reload()
-    {
-        Invoke(nameof(AllowShooting), _shootCooldown);
-    }
-
-    private void AddListeners(Projectile<EnemyType> projectile)
-    {
-        projectile.Desactivating += _pool.Put;
-        projectile.Collide += OnProjectileHit;
-        projectile.Destroyed += RemoveListeners;
-    }
-
-    private void RemoveListeners(Projectile<EnemyType> projectile)
-    {
-        projectile.Desactivating -= _pool.Put;
-        projectile.Collide -= OnProjectileHit;
-        projectile.Destroyed -= RemoveListeners;
-    }
-
-    private void AllowShooting() => _canShoot = true;
 }

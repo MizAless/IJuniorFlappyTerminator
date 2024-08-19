@@ -1,1 +1,1 @@
-public class EnemyProjectilePool : ObjectPool<Projectile<Player>> { }
+public class EnemyProjectilePool : ObjectPool<Projectile<Enemy>> { }

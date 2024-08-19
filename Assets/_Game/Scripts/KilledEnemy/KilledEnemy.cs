@@ -11,12 +11,12 @@ public class KilledEnemy : MonoBehaviour
 
     private void OnEnable()
     {
-        _enemySpawner.InstatiatedEnemy += OnInstatiated;
+        _enemySpawner.Instatiated += OnInstatiated;
     }
 
     private void OnDisable()
     {
-        _enemySpawner.InstatiatedEnemy -= OnInstatiated;
+        _enemySpawner.Instatiated -= OnInstatiated;
     }
 
     private void OnInstatiated(Enemy enemy)
@@ -36,8 +36,9 @@ public class KilledEnemy : MonoBehaviour
         enemy.Destroyed += RemoveListeners;
     }
 
-    private void RemoveListeners(Enemy enemy)
+    private void RemoveListeners(IDestroyable destroyableObject)
     {
+        var enemy = destroyableObject as Enemy;
         enemy.Dying -= UpdateCounter;
         enemy.Destroyed -= RemoveListeners;
     }

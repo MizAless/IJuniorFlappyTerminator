@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class EnemyShooter : Shooter<Player>
+public class EnemyShooter : Shooter<Enemy>
 {
     public IEnumerator Shooting()
     {

@@ -271,7 +271,7 @@ MonoBehaviour:
   - {fileID: 218820849}
   - {fileID: 1730550423}
   - {fileID: 2133791103}
-  _cooldown: 0.1
+  _cooldown: 4
   _spawnOffest: {x: 2, y: 2}
   _pool: {fileID: 1472704547}
   _enemyProjectilePool: {fileID: 980371218}

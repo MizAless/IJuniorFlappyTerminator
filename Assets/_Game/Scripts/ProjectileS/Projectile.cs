@@ -3,8 +3,8 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public abstract class Projectile<EnemyType> : MonoBehaviour
-    where EnemyType : IDamagable
+public abstract class Projectile<OwnerType> : MonoBehaviour, IDestroyable
+    where OwnerType : IDamagable
 {
     [SerializeField] private int _damage = 1;
     [SerializeField] private float _flyForce = 10;
@@ -14,10 +14,10 @@ public abstract class Projectile<EnemyType> : MonoBehaviour
 
     public int Damage => _damage;
 
-    public event Action<Projectile<EnemyType>, EnemyType> Collide;
-    public event Action<Projectile<EnemyType>> Desactivating;
-    public event Action<Projectile<EnemyType>> Desactivated;
-    public event Action<Projectile<EnemyType>> Destroyed;
+    public event Action<Projectile<OwnerType>, IDamagable> Collide;
+    public event Action<Projectile<OwnerType>> Desactivating;
+    public event Action<Projectile<OwnerType>> Desactivated;
+    public event Action<IDestroyable> Destroyed;
 
     private void Awake()
     {
@@ -26,9 +26,10 @@ public abstract class Projectile<EnemyType> : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.TryGetComponent(out EnemyType enemy))
+        if (collision.gameObject.TryGetComponent(out IDamagable enemy))
         {
-            Collide?.Invoke(this, enemy);
+            if (enemy is OwnerType == false)
+                Collide?.Invoke(this, enemy);
         }
     }
 

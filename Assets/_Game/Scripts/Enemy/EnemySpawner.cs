@@ -1,20 +1,16 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class EnemySpawner : MonoBehaviour
+public class EnemySpawner : Spawner<Enemy>
 {
     [SerializeField] private List<Transform> _spawnPoints;
     [SerializeField] private float _cooldown = 2f;
     [SerializeField] private Vector2 _spawnOffest = new Vector2(2f, 2f);
-    [SerializeField] private ObjectPool<Enemy> _pool;
-    [SerializeField] private EnemyProjectilePool _enemyProjectilePool;
+    [SerializeField] private Spawner<Projectile<Enemy>> _projectileSpawner;
 
     private List<SpawnPoint> _unarySpawnPoints;
-
-    public event Action<Enemy> InstatiatedEnemy;
 
     private void Awake()
     {
@@ -29,6 +25,38 @@ public class EnemySpawner : MonoBehaviour
         StartCoroutine(Spawning());
     }
 
+    public override Enemy Spawn()
+    {
+        if (TryGetRandomSpawnPoint(out SpawnPoint spawnPoint) == false)
+            return null;
+
+        var enemy = base.Spawn();
+
+        spawnPoint.SetEnemy(enemy);
+
+        Vector3 movePosition = spawnPoint.Position;
+        float randomSpawnYPoint = UnityEngine.Random.Range(-_spawnOffest.y, _spawnOffest.y);
+        Vector3 spawnPosition = movePosition + Vector3.right * _spawnOffest.x + Vector3.up * randomSpawnYPoint;
+        Quaternion spawnRotation = Quaternion.Euler(0, 180, 0);
+
+        enemy.Init(spawnPosition, movePosition, spawnRotation, _projectileSpawner);
+
+        return enemy;
+    }
+
+    protected override void AddListeners(Enemy enemy)
+    {
+        enemy.Dying += Pool.Put;
+        enemy.Destroyed += RemoveListeners;
+    }
+
+    protected override void RemoveListeners(IDestroyable destroyableObject)
+    {
+        var enemy = destroyableObject as Enemy;
+        enemy.Dying -= Pool.Put;
+        enemy.Destroyed -= RemoveListeners;
+    }
+
     private IEnumerator Spawning()
     {
         var wait = new WaitForSeconds(_cooldown);
@@ -38,31 +66,6 @@ public class EnemySpawner : MonoBehaviour
             Spawn();
             yield return wait;
         }
-    }
-
-    private void Spawn()
-    {
-        if (TryGetRandomSpawnPoint(out SpawnPoint spawnPoint) == false)
-            return;
-
-        var enemy = _pool.Get(out bool isInstantiated);
-
-        spawnPoint.SetEnemy(enemy);
-
-        if (isInstantiated)
-        {
-            InstatiatedEnemy?.Invoke(enemy);
-            AddListeners(enemy);
-        }
-
-        Vector3 movePosition = spawnPoint.Position;
-        float randomSpawnYPoint = UnityEngine.Random.Range(-_spawnOffest.y, _spawnOffest.y);
-        Vector3 spawnPosition = movePosition + Vector3.right * _spawnOffest.x + Vector3.up * randomSpawnYPoint;
-        Quaternion spawnRotation = Quaternion.Euler(0, 180, 0);
-
-        enemy.Init(spawnPosition, movePosition, spawnRotation, _enemyProjectilePool);
-
-        
     }
 
     private bool TryGetRandomSpawnPoint(out SpawnPoint spawnPoint)
@@ -77,17 +80,5 @@ public class EnemySpawner : MonoBehaviour
 
         spawnPoint = freeSpawnPoints[UnityEngine.Random.Range(0, freeSpawnPoints.Count)];
         return true;
-    }
-
-    private void AddListeners(Enemy enemy)
-    {
-        enemy.Dying += _pool.Put;
-        enemy.Destroyed += RemoveListeners;
-    }
-
-    private void RemoveListeners(Enemy enemy)
-    {
-        enemy.Dying -= _pool.Put;
-        enemy.Destroyed -= RemoveListeners;
     }
 }
