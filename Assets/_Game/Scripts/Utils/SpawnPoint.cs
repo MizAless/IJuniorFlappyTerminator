@@ -18,12 +18,12 @@ public class SpawnPoint
     {
         Enemy = enemy;
         IsFree = false;
-        enemy.Dying += Clear;
+        enemy.Died += Clear;
     }
 
     private void Clear(Enemy enemy)
     {
-        enemy.Dying -= Clear;
+        enemy.Died -= Clear;
         Enemy = null;
         IsFree = true;
     }

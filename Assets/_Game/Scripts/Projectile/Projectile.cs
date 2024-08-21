@@ -15,7 +15,6 @@ public abstract class Projectile<OwnerType> : MonoBehaviour, IDestroyable
     public int Damage => _damage;
 
     public event Action<Projectile<OwnerType>, IDamagable> Collide;
-    public event Action<Projectile<OwnerType>> Desactivating;
     public event Action<Projectile<OwnerType>> Desactivated;
     public event Action<IDestroyable> Destroyed;
 
@@ -49,7 +48,6 @@ public abstract class Projectile<OwnerType> : MonoBehaviour, IDestroyable
 
     public void Destroy()
     {
-        Desactivating?.Invoke(this);
         Desactivated?.Invoke(this);
     }
 

@@ -34,26 +34,26 @@ public class EnemySpawner : Spawner<Enemy>
 
         spawnPoint.SetEnemy(enemy);
 
-        Vector3 movePosition = spawnPoint.Position;
+        Vector3 targetPosition = spawnPoint.Position;
         float randomSpawnYPoint = UnityEngine.Random.Range(-_spawnOffest.y, _spawnOffest.y);
-        Vector3 spawnPosition = movePosition + Vector3.right * _spawnOffest.x + Vector3.up * randomSpawnYPoint;
+        Vector3 spawnPosition = targetPosition + Vector3.right * _spawnOffest.x + Vector3.up * randomSpawnYPoint;
         Quaternion spawnRotation = Quaternion.Euler(0, 180, 0);
 
-        enemy.Init(spawnPosition, movePosition, spawnRotation, _projectileSpawner);
+        enemy.Init(spawnPosition, targetPosition, spawnRotation, _projectileSpawner);
 
         return enemy;
     }
 
     protected override void AddListeners(Enemy enemy)
     {
-        enemy.Dying += Pool.Put;
+        enemy.Died += Pool.Put;
         enemy.Destroyed += RemoveListeners;
     }
 
     protected override void RemoveListeners(IDestroyable destroyableObject)
     {
         var enemy = destroyableObject as Enemy;
-        enemy.Dying -= Pool.Put;
+        enemy.Died -= Pool.Put;
         enemy.Destroyed -= RemoveListeners;
     }
 

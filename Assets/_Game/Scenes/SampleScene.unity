@@ -274,7 +274,6 @@ MonoBehaviour:
   - {fileID: 2133791103}
   _cooldown: 4
   _spawnOffest: {x: 2, y: 2}
-  _enemyProjectilePool: {fileID: 980371218}
   _projectileSpawner: {fileID: 659396003}
 --- !u!4 &146606018
 Transform:
@@ -1377,7 +1376,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 204}
+  m_AnchoredPosition: {x: 0, y: 80}
   m_SizeDelta: {x: 236.581, y: 118.2905}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &763374845
@@ -1456,7 +1455,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 79c819dd60ba5374eb1c2a5a372aa19e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9bedc98f7585ba748acb9d139c4e49c2, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2408,7 +2407,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1362691643}
-  - component: {fileID: 1362691642}
   m_Layer: 0
   m_Name: DeadlyWalls
   m_TagString: Untagged
@@ -2416,22 +2414,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1362691642
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1362691641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 33559fd7ea0b065418ff1dc7af47e2b1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _player: {fileID: 1441215964}
-  _walls:
-  - {fileID: 1656280932}
-  - {fileID: 990276038}
 --- !u!4 &1362691643
 Transform:
   m_ObjectHideFlags: 0
@@ -2500,8 +2482,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54c7e7b5c343adc4dac1f2330623ff5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _killedEnemy: {fileID: 1638640929}
-  _killedEnemyText: {fileID: 268167217}
+  _killedEnemyCounter: {fileID: 1638640929}
+  _killedEnemyCounterText: {fileID: 268167217}
 --- !u!114 &1364550041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2544,6 +2526,7 @@ GameObject:
   - component: {fileID: 1441215967}
   - component: {fileID: 1441215968}
   - component: {fileID: 1441215969}
+  - component: {fileID: 1441215971}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -2711,6 +2694,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.85445, y: 0.5882725}
   m_EdgeRadius: 0
+--- !u!114 &1441215971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1441215962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e944fd97b0b9f04a90a3c6516adb282, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1472704546
 GameObject:
   m_ObjectHideFlags: 0
@@ -2867,7 +2862,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1638640928}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b361285ba7836094c8a98fe05595a844, type: 3}
+  m_Script: {fileID: 11500000, guid: 1de586a767d633c45a4e2ea106eaa35c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _enemySpawner: {fileID: 146606017}
@@ -3534,10 +3529,10 @@ SceneRoots:
   - {fileID: 519420032}
   - {fileID: 204776238}
   - {fileID: 779581517}
-  - {fileID: 723937585}
-  - {fileID: 1638640930}
-  - {fileID: 1362691643}
-  - {fileID: 1441215963}
   - {fileID: 1228357612}
+  - {fileID: 723937585}
+  - {fileID: 1441215963}
   - {fileID: 2131195294}
   - {fileID: 340783956}
+  - {fileID: 1638640930}
+  - {fileID: 1362691643}

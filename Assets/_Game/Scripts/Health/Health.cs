@@ -8,7 +8,6 @@ public class Health : MonoBehaviour
     private int _health;
 
     public event Action<int> Changed;
-    public event Action Dying;
     public event Action Died;
 
     private void Awake()
@@ -39,7 +38,6 @@ public class Health : MonoBehaviour
 
     public void Die()
     {
-        Dying?.Invoke();
         Died?.Invoke();
     }
 }

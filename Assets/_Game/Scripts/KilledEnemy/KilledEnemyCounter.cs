@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class KilledEnemy : MonoBehaviour
+public class KilledEnemyCounter : MonoBehaviour
 {
     [SerializeField] private EnemySpawner _enemySpawner;
 
@@ -32,14 +32,14 @@ public class KilledEnemy : MonoBehaviour
 
     private void AddListeners(Enemy enemy)
     {
-        enemy.Dying += UpdateCounter;
+        enemy.Died += UpdateCounter;
         enemy.Destroyed += RemoveListeners;
     }
 
     private void RemoveListeners(IDestroyable destroyableObject)
     {
         var enemy = destroyableObject as Enemy;
-        enemy.Dying -= UpdateCounter;
+        enemy.Died -= UpdateCounter;
         enemy.Destroyed -= RemoveListeners;
     }
 }

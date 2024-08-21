@@ -5,12 +5,16 @@ using UnityEngine;
 [RequireComponent(typeof(InputReader))]
 [RequireComponent(typeof(PlayerShooter))]
 [RequireComponent(typeof(Health))]
+[RequireComponent(typeof(CollisionDetector))] 
+[RequireComponent(typeof(PlayerStates))] 
 public class Player : MonoBehaviour, IDamagable
 {
     private Mover _mover;
     private InputReader _inputReader;
     private PlayerShooter _shooter;
     private Health _health;
+    private CollisionDetector _collisionDetector;
+    private PlayerStates _playerStates;
 
     public event Action Died;
 
@@ -20,11 +24,13 @@ public class Player : MonoBehaviour, IDamagable
         _inputReader = GetComponent<InputReader>();
         _shooter = GetComponent<PlayerShooter>();
         _health = GetComponent<Health>();
+        _collisionDetector = GetComponent<CollisionDetector>();
+        _playerStates = GetComponent<PlayerStates>();
     }
 
     private void Start()
     {
-        StartCoroutine(_mover.AutomaticFlying());
+        _playerStates.StartAutomaticFlying();
     }
 
     private void OnDisable()
@@ -36,7 +42,7 @@ public class Player : MonoBehaviour, IDamagable
 
     public void StartFlying()
     {
-        _mover.OffAutomaticFlying();
+        _playerStates.StartManualFlying();
         AddListeners();
     }
 
@@ -55,6 +61,7 @@ public class Player : MonoBehaviour, IDamagable
         _inputReader.Jumped += _mover.Jump;
         _inputReader.ShootFired += _shooter.Shoot;
         _health.Died += OnDied;
+        _collisionDetector.DeadlyWallCollide += Die;
     }
 
     private void RemoveListeners()
@@ -62,6 +69,7 @@ public class Player : MonoBehaviour, IDamagable
         _inputReader.Jumped -= _mover.Jump;
         _inputReader.ShootFired -= _shooter.Shoot;
         _health.Died -= OnDied;
+        _collisionDetector.DeadlyWallCollide -= Die;
     }
 
     private void OnDied()

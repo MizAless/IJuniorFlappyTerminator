@@ -5,13 +5,12 @@ public class ProjectileSpawner<OwnerType> : Spawner<Projectile<OwnerType>>
 {
     public override Projectile<OwnerType> Spawn()
     {
-        var projectile = base.Spawn();
-        return projectile;
+        return base.Spawn();
     }
 
     protected override void AddListeners(Projectile<OwnerType> projectile)
     {
-        projectile.Desactivating += Pool.Put;
+        projectile.Desactivated += Pool.Put;
         projectile.Collide += OnProjectileHit;
         projectile.Destroyed += RemoveListeners;
     }
@@ -20,9 +19,9 @@ public class ProjectileSpawner<OwnerType> : Spawner<Projectile<OwnerType>>
     {
         var projectile = destroyableObject as Projectile<OwnerType>;
 
-        projectile.Desactivating += Pool.Put;
-        projectile.Collide += OnProjectileHit;
-        projectile.Destroyed += RemoveListeners;
+        projectile.Desactivated -= Pool.Put;
+        projectile.Collide -= OnProjectileHit;
+        projectile.Destroyed -= RemoveListeners;
     }
 
     private void OnProjectileHit(Projectile<OwnerType> projectile, IDamagable enemy)

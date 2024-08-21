@@ -3,7 +3,12 @@ using UnityEngine;
 
 public class EnemyShooter : Shooter<Enemy>
 {
-    public IEnumerator Shooting()
+    public void StartShooting()
+    {
+        StartCoroutine(Shooting());
+    }
+
+    private IEnumerator Shooting()
     {
         var wait = new WaitForSeconds(base.ShootCooldown);
 
