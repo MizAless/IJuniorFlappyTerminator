@@ -25,7 +25,7 @@ public abstract class Shooter<OwnerType> : MonoBehaviour
 
         _canShoot = false;
 
-        var projectile = _projectileSpawner.Spawn();
+        Projectile<OwnerType> projectile = _projectileSpawner.Spawn();
 
         projectile.Init(_shootPoint.position, _shootPoint.rotation);
 

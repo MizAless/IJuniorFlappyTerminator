@@ -38,7 +38,7 @@ public class KilledEnemyCounter : MonoBehaviour
 
     private void RemoveListeners(IDestroyable destroyableObject)
     {
-        var enemy = destroyableObject as Enemy;
+        Enemy enemy = destroyableObject as Enemy;
         enemy.Died -= UpdateCounter;
         enemy.Destroyed -= RemoveListeners;
     }

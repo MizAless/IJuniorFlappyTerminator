@@ -16,7 +16,7 @@ public class EnemySpawner : Spawner<Enemy>
     {
         _unarySpawnPoints = new();
 
-        foreach (var spawnPoint in _spawnPoints)
+        foreach (Transform spawnPoint in _spawnPoints)
             _unarySpawnPoints.Add(new SpawnPoint(spawnPoint.position));
     }
 
@@ -30,7 +30,7 @@ public class EnemySpawner : Spawner<Enemy>
         if (TryGetRandomSpawnPoint(out SpawnPoint spawnPoint) == false)
             return null;
 
-        var enemy = base.Spawn();
+        Enemy enemy = base.Spawn();
 
         spawnPoint.SetEnemy(enemy);
 
@@ -52,7 +52,7 @@ public class EnemySpawner : Spawner<Enemy>
 
     protected override void RemoveListeners(IDestroyable destroyableObject)
     {
-        var enemy = destroyableObject as Enemy;
+        Enemy enemy = destroyableObject as Enemy;
         enemy.Died -= Pool.Put;
         enemy.Destroyed -= RemoveListeners;
     }
@@ -70,7 +70,7 @@ public class EnemySpawner : Spawner<Enemy>
 
     private bool TryGetRandomSpawnPoint(out SpawnPoint spawnPoint)
     {
-        var freeSpawnPoints = _unarySpawnPoints.Where(spawnPoint => spawnPoint.IsFree).ToList();
+        List<SpawnPoint> freeSpawnPoints = _unarySpawnPoints.Where(spawnPoint => spawnPoint.IsFree).ToList();
 
         if (freeSpawnPoints.Count == 0)
         {

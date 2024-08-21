@@ -17,7 +17,7 @@ public class ProjectileSpawner<OwnerType> : Spawner<Projectile<OwnerType>>
 
     protected override void RemoveListeners(IDestroyable destroyableObject)
     {
-        var projectile = destroyableObject as Projectile<OwnerType>;
+        Projectile<OwnerType> projectile = destroyableObject as Projectile<OwnerType>;
 
         projectile.Desactivated -= Pool.Put;
         projectile.Collide -= OnProjectileHit;

@@ -22,7 +22,7 @@ public class Game : MonoBehaviour
 
     private void RestartGame()
     {
-        var currentScene = SceneManager.GetActiveScene();
+        Scene currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(currentScene.name);
     }
 }

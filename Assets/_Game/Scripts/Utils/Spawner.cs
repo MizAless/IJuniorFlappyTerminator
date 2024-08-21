@@ -10,7 +10,7 @@ public abstract class Spawner<T> : MonoBehaviour
 
     public virtual T Spawn()
     {
-        var newObject = Pool.Get(out bool isInstantiated);
+        T newObject = Pool.Get(out bool isInstantiated);
 
         if (isInstantiated)
         {
